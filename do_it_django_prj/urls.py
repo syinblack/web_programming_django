@@ -20,4 +20,5 @@ from django.conf.urls import include    #for using include
 urlpatterns = [
     path('blog/', include('blog.urls')),
     path('admin/', admin.site.urls),
+    path('', include('single_pages.urls')),
 ]
