@@ -12,3 +12,7 @@ class Post(models.Model):
     # 게시물 제목 나타내기, [pk] title
     def __str__(self):
         return f'[{self.pk}] {self.title}'
+
+
+    def get_absolute_url(self):
+        return f'/blog/{self.pk}/'
