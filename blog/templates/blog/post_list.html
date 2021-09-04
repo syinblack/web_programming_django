@@ -86,9 +86,12 @@
                         <img class="card-img-top" src="https://picsum.photos/seed/{{ p.id }}/800/200" alt="random_image">
                     {% endif %}
                     <div class="card-body">
-                        <div class="small text-muted">January 1, 2021</div>
                         <h2 class="card-title h4">{{ p.title }}</h2>
-                        <p class="card-text">{{ p.content }}</p>
+                        {% if p.hook_text %}
+                            <h5 class="text-muted">{{ p.hook_text }}</h5>
+                        {% endif %}
+                        <div class="small text-muted">{{ p.created_at }}</div>
+                        <p class="card-text">{{ p.content | truncatewords:45 }}</p>
                         <a href="{{ p.get_absolute_url }}" class="btn btn-primary">Read more &rarr;</a>
                     </div>
                     <div class="card-footer text-muted">
