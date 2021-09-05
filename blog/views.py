@@ -17,7 +17,7 @@ class PostDetail(DetailView):
 
     return render(
         request,
-        'blog/post_list.html',
+        'blog/base.html',
         {
             'posts' : posts,
         }
