@@ -3,6 +3,7 @@ from django.views.generic import ListView, DetailView
 from .models import Post, Category
 
 
+# CBV 방식
 class PostList(ListView):
     model = Post
     ordering = '-pk'
@@ -13,37 +14,33 @@ class PostList(ListView):
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         return context
 
+
 class PostDetail(DetailView):
     model = Post
 
-    def get_context_data(self, **Kwargs):
+    def get_context_data(self, **kwargs):
         context = super(PostDetail, self).get_context_data()
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         return context
 
-# FBV방식 (이제 사용안함.)
-"""def index(request):
-    posts = Post.objects.all().order_by('-pk')      # 모든 post 레코드를 가져옴.
 
-
-    return render(
-        request,
-        'blog/base.html',
-        {
-            'posts' : posts,
-        }
-    )
-
-
-def single_post_page(request, pk):      # pk는 데이터베이스에서 데이터를 불러오기 위함.
-    post = Post.objects.get(pk=pk)
+# FBV 방식
+def category_page(request, slug):
+    if slug == 'no_category':
+        category = '미분류'
+        post_list = Post.objects.filter(category=None)
+    else:
+        category = Category.objects.get(slug=slug)
+        post_list = Post.objects.filter(category=category)
 
     return render(
         request,
-        'blog/post_detail.html',
+        'blog/post_list.html',
         {
-            'post' : post,
+            'post_list': post_list,
+            'categories': Category.objects.all(),
+            'no_category_post_count': Post.objects.filter(category=None).count(),
+            'category': category,
         }
     )
-"""
