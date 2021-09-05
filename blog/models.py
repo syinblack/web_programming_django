@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 import os
 
 #Post 모델 만들기.
@@ -12,11 +13,12 @@ class Post(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    #autor:
+
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # 게시물 제목 나타내기, [pk] title
     def __str__(self):
-        return f'[{self.pk}] {self.title}'
+        return f'[{self.pk}] {self.title} :: {self.author}'
 
     def get_absolute_url(self):
         return f'/blog/{self.pk}/'
