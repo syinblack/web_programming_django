@@ -1,7 +1,6 @@
 {% extends 'blog/base.html' %}
 
 {% block main_area %}
-
     {% if user.is_authenticated %}
         {% if user.is_superuser or user.is_staff %}
             <a class="btn btn-info btn-sm float-right" href="/blog/create_post/" role="button"><i class="fas fa-pen"></i>&nbsp;&nbsp;New Post</a>
@@ -10,10 +9,12 @@
 
     <h1>
         Blog
-        {% if category %}
+        {% if category %}   <!-- views.py 에서 category 항목을 추가한 경우에만 생성 -->
+            #category :
             <span class="badge bg-light text-dark">{{ category }}</span>
         {% endif %}
-        {% if tag %}
+        {% if tag %}        <!-- views.py 에서 tag 항목을 추가한 경우에만 생성 -->
+            #tag :
             <span class="badge badge-light"><i class="fas fa-tags"></i>{{ tag }} ({{ tag.post_set.count }})</span>
         {% endif %}
     </h1>

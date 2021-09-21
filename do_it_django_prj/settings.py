@@ -31,14 +31,14 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
+INSTALLED_APPS = [                      # 등록된 앱 목록
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_extensions',
+    'django_extensions',            # 장고 셸 플러스 등록
 
     'blog',
     'single_pages',
@@ -110,13 +110,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Seoul' #'UTC'
+TIME_ZONE = 'Asia/Seoul'    # 서울 시간대로 설정, use_tz도 false 로 바꿔야 함.
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False #True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -124,6 +124,7 @@ USE_TZ = False #True
 
 STATIC_URL = '/static/'
 
+# 미디어 파일 관리할 폴더만들기
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '_media')
 

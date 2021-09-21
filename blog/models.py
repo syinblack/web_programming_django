@@ -16,7 +16,8 @@ class Tag(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)
+    # category 에 대한 고유 url 설정
+    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)    # allow_unicode = True : 한글 허용
 
     def __str__(self):
         return self.name
@@ -25,7 +26,7 @@ class Category(models.Model):
         return f'/blog/category/{self.slug}/'
 
     class Meta:
-        verbose_name_plural = 'Categories'
+        verbose_name_plural = 'Categories'  # 복수명 수동 설정
 
 
 class Post(models.Model):
@@ -39,13 +40,14 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)  # CASCADE
-
+    # many to one field
+    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)  # on_delete : 해당 작성자가 삭제 되었을 때 관련된 게시물 처리 정책
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
 
+    # one to one field
     tags = models.ManyToManyField(Tag, blank=True)
 
-    # 게시물 제목 나타내기, [pk] title
+    # 게시물 제목 나타내기 : ex [num] title :: 작성자
     def __str__(self):
         return f'[{self.pk}] {self.title} :: {self.author}'
 

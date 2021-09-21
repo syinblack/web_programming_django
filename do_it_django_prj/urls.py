@@ -19,9 +19,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('blog/', include('blog.urls')),
-    path('admin/', admin.site.urls),
-    path('', include('single_pages.urls')),
+    path('blog/', include('blog.urls')),        # blog 앱(폴더)의 urls.py 로 연결
+    path('', include('single_pages.urls')),     # single.pages/urls.py 로 연결
+
+    path('admin/', admin.site.urls),        # default: 관리자 페이지로 연결
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

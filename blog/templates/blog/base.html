@@ -2,18 +2,22 @@
 {% load static %}
 <html lang = "ko">
 <head>
-    <title>{% block head_title %}Blog{% endblock %}</title>
+    <title>{% block head_title %}Blog{% endblock %}</title> <!-- post_list.html아닌 post_detail.html 경우 head_title 따로 생성. -->
 
+    <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{% static 'blog/bootstrap/bootstrap.min.css' %}" media="screen">
+    <!-- Custom styles for this template (nav bar padding) -->
+    <link rel="stylesheet" href="{% static 'blog/css/blog-post.css' %}" media="screen">
+
     <script src="https://kit.fontawesome.com/047f98c394.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    {% include 'blog/navbar.html' %}
+    {% include 'blog/navbar.html' %} <!-- !나중에 navbar 작동방식 개선할 것, -->
 
     <div class="container my-3">
         <div class="row">
             <div class="col-md-8 col-lg-9" id="main-area">
-                {% block main_area %}
+                {% block main_area %}       <!-- fill with post_list, post_detail -->
                 {% endblock %}
             </div>
             <div class="col-md-4 col-lg-3">
@@ -27,6 +31,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Categories widget-->
                 <div class="card mb-4" id="categories-card">
                     <h5 class="card-header">Categories</h5>

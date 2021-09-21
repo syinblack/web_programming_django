@@ -1,34 +1,38 @@
 from django.test import TestCase, Client
-from bs4 import BeautifulSoup
-from django.contrib.auth.models import User
+from bs4 import BeautifulSoup                   # html parser
+from django.contrib.auth.models import User     # create user
 from .models import Post, Category, Tag
 
 
 class TestView(TestCase):
     def setUp(self):
+        # create browser
         self.client = Client()
 
+        # create user
         self.user_trump = User.objects.create_user(username='trump', password='somepassword')
         self.user_obama = User.objects.create_user(username='obama', password='somepassword')
 
         self.user_obama.is_staff = True
         self.user_obama.save()
 
+        # create category
         self.category_programming = Category.objects.create(name='programming', slug='programming')
         self.category_music = Category.objects.create(name='music', slug='music')
 
+        # create tag
         self.tag_python_kor = Tag.objects.create(name='파이썬 공부', slug='파이썬-공부')
         self.tag_python = Tag.objects.create(name='python', slug='python')
         self.tag_hello = Tag.objects.create(name='hello', slug='hello')
 
+        # create post
         self.post_001 = Post.objects.create(
             title='첫 번째 포스트입니다.',
             content='Hello World. We are the world.',
             category=self.category_programming,
             author=self.user_trump
         )
-        self.post_001.tags.add(self.tag_hello)
-
+        self.post_001.tags.add(self.tag_hello)      # tag는 여러개를 추가할 수 있으므로 따로 추가한다.
         self.post_002 = Post.objects.create(
             title='두 번째 포스트입니다.',
             content='1등이 전부는 아니잖아요?',
@@ -43,7 +47,7 @@ class TestView(TestCase):
         self.post_003.tags.add(self.tag_python_kor)
         self.post_003.tags.add(self.tag_python)
 
-    def navbar_test(self, soup):    # 테스트를 위한 함수가 아님.
+    def navbar_test(self, soup):    # test_post_list, test_post_detail 에서 호출
         navbar = soup.nav
         self.assertIn('Blog', navbar.text)
         self.assertIn('About Me', navbar.text)
@@ -60,13 +64,14 @@ class TestView(TestCase):
         about_me_btn = navbar.find('a', text='About Me')
         self.assertEqual(about_me_btn.attrs['href'], '/about_me/')
 
-    def category_card_test(self, soup):
+    def category_card_test(self, soup):     # test_post_list, test_post_detail 에서 호출
         categories_card = soup.find('div', id='categories-card')
         self.assertIn('Categories', categories_card.text)
         self.assertIn(f'{self.category_programming.name} ({self.category_programming.post_set.count()})',
                       categories_card.text)
         self.assertIn(f'{self.category_music.name} ({self.category_music.post_set.count()})', categories_card.text)
-        self.assertIn(f'미분류 (1)', categories_card.text)
+        self.assertIn(f'미분류 (1)', categories_card.text)     # !미분류 게시물 개수 자동으로 카운트하는 기능 추가하기.
+        # Post.objects.filter(category=None).count()
 
     def test_post_list(self):
         # 포스트가 있는 경우
@@ -106,8 +111,9 @@ class TestView(TestCase):
         self.assertIn(self.user_trump.username.upper(), main_area.text)
         self.assertIn(self.user_obama.username.upper(), main_area.text)
 
-        # 포스트가 없는 경우
+        # 포스트 전부 삭제 (def test_post_list 함수 안에서만 적용됨.)
         Post.objects.all().delete()
+        # 포스트가 없는 경우
         self.assertEqual(Post.objects.count(), 0)
         response = self.client.get('/blog/')
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -124,9 +130,8 @@ class TestView(TestCase):
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
 
-        # 내비게이션 바 검사
+        # 내비게이션 바, 카테고리 카드 검사
         self.navbar_test(soup)
-
         self.category_card_test(soup)
 
         # 2.3. 첫 번째 포스트의 제목이 웹 브라우저 탭 타이틀에 들어 있다.
@@ -138,7 +143,7 @@ class TestView(TestCase):
         self.assertIn(self.post_001.title, post_area.text)
         self.assertIn(self.category_programming.name, post_area.text)
 
-        # 2.5. 첫 번째 포스트의 작성자(author)가 포스트 영역에 있다(아직 구현할 수 없음).
+        # 2.5. 첫 번째 포스트의 작성자(author)가 포스트 영역에 있다.
         self.assertIn(self.user_trump.username.upper(), post_area.text)
 
         # 2.6. 첫 번째 포스트의 내용(content)이 포스트 영역에 있다.
@@ -213,6 +218,7 @@ class TestView(TestCase):
                 'tags_str': 'new tag; 한글 태그, python'
             }
         )
+        self.assertEqual(Post.objects.count(), 4)
         last_post = Post.objects.last()
         self.assertEqual(last_post.title, "Post Form 만들기")
         self.assertEqual(last_post.author.username, 'obama')
@@ -251,12 +257,17 @@ class TestView(TestCase):
         main_area = soup.find('div', id='main-area')
         self.assertIn('Edit Post', main_area.text)
 
+        tag_str_input = main_area.find('input', id='id_tags_str')
+        self.assertTrue(tag_str_input)      # 기존의 post_003 의 태그 존재 확인.
+        self.assertIn('파이썬 공부; python', tag_str_input.attrs['value'])
+
         response = self.client.post(
             update_post_url,
             {
                 'title': '세 번째 포스트를 수정했습니다. ',
                 'content': '안녕 세계? 우리는 하나!',
-                'category': self.category_music.pk
+                'category': self.category_music.pk,
+                'tags_str': '파이썬 공부; 한글 태그, some tag'
             },
             follow=True
         )
@@ -266,5 +277,9 @@ class TestView(TestCase):
         self.assertIn('세 번째 포스트를 수정했습니다.', main_area.text)
         self.assertIn('안녕 세계? 우리는 하나!', main_area.text)
         self.assertIn(self.category_music.name, main_area.text)
+        self.assertIn('파이썬 공부', main_area.text)
+        self.assertIn('한글 태그', main_area.text)
+        self.assertIn('some tag', main_area.text)
+        self.assertNotIn('python', main_area.text)  # python tag가 제거됐는지 확인.
 
 
