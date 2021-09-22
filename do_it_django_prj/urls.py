@@ -22,6 +22,7 @@ urlpatterns = [
     path('blog/', include('blog.urls')),            # blog 앱(폴더)의 urls.py 로 연결
     path('', include('single_pages.urls')),         # single.pages/urls.py 로 연결
     path('markdownx/', include('markdownx.urls')),  # markdownx 사용
+    path('accounts/', include('allauth.urls')),     # allauth 사용
     path('admin/', admin.site.urls),                # default: 관리자 페이지로 연결
 ]
 

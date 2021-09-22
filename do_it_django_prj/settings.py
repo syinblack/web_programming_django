@@ -43,6 +43,13 @@ INSTALLED_APPS = [                      # 등록된 앱 목록
     'crispy_forms',
     'markdownx',
 
+    # 소셜 회원가입, 로그인 기능
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
     'blog',
     'single_pages',
 ]
@@ -136,3 +143,17 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 회원가입, 로그인
+AUTHENTICATION_BACKENDS = (
+
+    'django.contrib.auth.backends.ModelBackend',
+
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+)
+SITE_ID = 1
+
+ACCOUNT_EMAIL_REQUIRED = True           # 회원가입 시 이메일 필요
+ACCOUNT_EMAIL_VERIFICATION = 'none'     # 이메일 검증 안함
+LOGIN_REDIRECT_URL = '/blog/'           # 로그인했을 때 포스트 목록 페이지로 redirect
