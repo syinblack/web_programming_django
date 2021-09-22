@@ -41,6 +41,7 @@ INSTALLED_APPS = [                      # 등록된 앱 목록
     'django_extensions',            # 장고 셸 플러스 등록
 
     'crispy_forms',
+    'markdownx',
 
     'blog',
     'single_pages',

@@ -42,7 +42,7 @@
         <hr>
         <!-- Post content-->
         <section class="mb-5">
-            <p>{{ post.content }}</p>
+            <p>{{ post.get_content_markdown | safe }}</p>   <!-- 마크다운 형식으로 가져옴 -->
         </section>
         <!--Tags-->
         {% if post.tags.exists %}
