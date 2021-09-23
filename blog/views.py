@@ -6,18 +6,31 @@ from .models import Post, Category, Tag, Comment
 from .forms import CommentForm
 from django.core.exceptions import PermissionDenied     # only writer can update his post
 from django.utils.text import slugify                   # for slugify()
-
+from django.core.paginator import Paginator
 
 # CBV 방식
 class PostList(ListView):
     model = Post
     ordering = '-pk'    # 최신순(pk 내림차순)
 
+    paginate_by = 3
+
     def get_context_data(self, **kwargs):   # ListView 의 멤버함수 get_context_data 오버라이딩, CBV에서 template으로 추가 인자를 넘길 때 사용.
-        context = super(PostList, self).get_context_data()  # 기존 기능 유지
-        # 두 가지 정보 추가
+        # 기존 기능 가져오기
+        context = super(PostList, self).get_context_data()
+
+        # 카테고리 카드
         context['categories'] = Category.objects.all()      # no_category 포함 모든 카테고리 이름 가져오고, 해당 개수 또한 가져옴.
         context['no_category_post_count'] = Post.objects.filter(category=None).count()  # 미분류 카테고리 개수 가져옴.
+
+        # 페이지네이션
+        context['paginator'] = Paginator(Post.objects.all(), self.paginate_by)
+
+        #start_index = int((context['page_obj'].number - 1) / self.block_size) * self.block_size
+        #end_index = min(start_index + self.block_size, len(context['paginator'].page_range))
+        #context['page_range'] = context['paginator'].page_range[start_index:end_index]
+        context['page_range'] = context['paginator'].page_range[:]  # range(1, 페이지 개수+1) 리스트 반환
+
         return context
 
 
