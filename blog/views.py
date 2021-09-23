@@ -6,14 +6,14 @@ from .models import Post, Category, Tag, Comment
 from .forms import CommentForm
 from django.core.exceptions import PermissionDenied     # only writer can update his post
 from django.utils.text import slugify                   # for slugify()
-from django.core.paginator import Paginator
+from django.db.models import Q                          # for 다중 쿼리 Q
+#from django.core.paginator import Paginator
 
 # CBV 방식
 class PostList(ListView):
     model = Post
     ordering = '-pk'    # 최신순(pk 내림차순)
-
-    paginate_by = 3
+    paginate_by = 3     # ListView 클래스를 상속한 PostList, PostSearch 에서는 pagination 한 페이지를 보여줄 것.
 
     def get_context_data(self, **kwargs):   # ListView 의 멤버함수 get_context_data 오버라이딩, CBV에서 template으로 추가 인자를 넘길 때 사용.
         # 기존 기능 가져오기
@@ -39,7 +39,21 @@ class PostList(ListView):
                 page_range_5 = [cur_page-2, cur_page-1, cur_page, cur_page+1, cur_page+2]
 
         context['page_range_5'] = page_range_5 # range(1, 페이지 개수+1) 리스트 반환
+        return context
 
+class PostSearch(PostList): # ListView -> PostList -> PostSearch 순으로 상속
+
+    def get_queryset(self):
+        q = self.kwargs['q']
+        post_list = Post.objects.filter(
+            Q(title__contains=q) | Q(tags__name__contains=q)
+        ).distinct()    # distinct 중복 방지
+        return post_list.order_by('-pk')
+
+    def get_context_data(self, **kwargs):
+        context = super(PostSearch, self).get_context_data()
+        q = self.kwargs['q']
+        context['search_info'] = f'Search: {q} ({self.get_queryset().count()})'
         return context
 
 
@@ -148,6 +162,8 @@ def category_page(request, slug):
         category = Category.objects.get(slug=slug)
         post_list = Post.objects.filter(category=category)
 
+    post_list = post_list.order_by('-pk')
+
     return render(
         request,
         'blog/post_list.html',  # post_list.html을 사용하므로, PostList 에서 context로 정의했던 부분을 딕셔너리 형태로 직접 정의해야 함.
@@ -163,6 +179,8 @@ def category_page(request, slug):
 def tag_page(request, slug):
     tag = Tag.objects.get(slug=slug)
     post_list = tag.post_set.all()
+
+    post_list = post_list.order_by('-pk')
 
     return render(
         request,

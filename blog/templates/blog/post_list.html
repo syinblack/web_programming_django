@@ -10,6 +10,7 @@
 
 <h1>
     Blog
+    {% if search_info %}<small class="text-muted">{{ search_info }}</small>{% endif %}
     {% if category %}
     <!-- views.py 에서 category 항목을 추가한 경우에만 생성 -->
     #category :
@@ -64,6 +65,7 @@
 <h3>아직 게시물이 없습니다.</h3>
 {% endif %}
 
+{% if is_paginated %} <!-- 게시물이 적어 pagination할 필요 없을 경우 해당 부분 표시 안됨 -->
 <!-- Pagination-->
 <ul class="pagination justify-content-center mb-4">
     {% if page_obj.has_previous %}
@@ -76,13 +78,15 @@
     </li>
     {% endif %}
 
-    {% for i in page_range_5 %}
-        {% if page_obj.number == i %}
-            <li class="page-item active" aria-current="page"><a class="page-link">{{ i }}</a></li>
-        {% else %}
-            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-        {% endif %}
-    {% endfor %}
+    {% if page_range_5 %}
+        {% for i in page_range_5 %}
+            {% if page_obj.number == i %}
+                <li class="page-item active" aria-current="page"><a class="page-link">{{ i }}</a></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 
     {% if page_obj.has_next %}
     <li class="page-item">
@@ -94,5 +98,5 @@
     </li>
     {% endif %}
 </ul>
-
+{% endif %}
 {% endblock %}
