@@ -24,12 +24,21 @@ class PostList(ListView):
         context['no_category_post_count'] = Post.objects.filter(category=None).count()  # 미분류 카테고리 개수 가져옴.
 
         # 페이지네이션
-        context['paginator'] = Paginator(Post.objects.all(), self.paginate_by)
+        #Paginator(Post.objects.all(), self.paginate_by)
+        cur_page = context['page_obj'].number
+        num_pages = context['page_obj'].paginator.num_pages
 
-        #start_index = int((context['page_obj'].number - 1) / self.block_size) * self.block_size
-        #end_index = min(start_index + self.block_size, len(context['paginator'].page_range))
-        #context['page_range'] = context['paginator'].page_range[start_index:end_index]
-        context['page_range'] = context['paginator'].page_range[:]  # range(1, 페이지 개수+1) 리스트 반환
+        if num_pages < 5:       # 페이지가 5개 미만이면 그냥 전부 표시
+            page_range_5 = range(1, num_pages + 1)
+        else:                   # 페이지가 5개 이상일 경우 해당 근처 5개 페이지 표시
+            if cur_page <= 2:
+                page_range_5 = [1, 2, 3, 4, 5]
+            elif cur_page >= num_pages - 1:
+                page_range_5 = [num_pages-4, num_pages-3, num_pages-2, num_pages-1, num_pages]
+            else:
+                page_range_5 = [cur_page-2, cur_page-1, cur_page, cur_page+1, cur_page+2]
+
+        context['page_range_5'] = page_range_5 # range(1, 페이지 개수+1) 리스트 반환
 
         return context
 

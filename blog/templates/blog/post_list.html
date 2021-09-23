@@ -76,33 +76,13 @@
     </li>
     {% endif %}
 
-    {% for i in page_range %}
-        {% if page_obj.number == i %}   <!-- 현재 페이지 page_obj.number와 i가 같은 경우 -->
+    {% for i in page_range_5 %}
+        {% if page_obj.number == i %}
             <li class="page-item active" aria-current="page"><a class="page-link">{{ i }}</a></li>
-        {% else %}                      <!-- 다른 경우 -->
-            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+        {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
         {% endif %}
     {% endfor %}
-    <!--{% for pg in paginator %}
-    <li class="page-item"><a class="page-link" href="?page={{ page_obj.number }}"> {{ page_obj.number }}</a></li>
-    {% endfor %}
-    {% if page_obj.number == 1 %}
-        <li class="page-item active" aria-current="page"><a class="page-link" href="?page=1">1</a></li>
-        <li class="page-item"><a class="page-link" href="?page=2">2</a>
-        <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-        <li class="page-item"><a class="page-link" href="#!">{{ page_obj.num_pages }}</a></li>
-        {% elif page_obj.number == page_obj_num_pages %}
-        <li class="page-item active"><a class="page-link" href="?page=1">1</a></li>
-        <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-        <li class="page-item active"><a class="page-link" href="?page=1">1</a></li>
-        <li class="page-item" aria-current="page"><a class="page-link" href="#!">{{ page_obj.num_pages }}</a></li>
-        {% else %}
-        <li class="page-item active" aria-current="page"><a class="page-link" href="?page=1">1</a></li>
-        <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
-        <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-        <li class="page-item"><a class="page-link" href="#!">4</a></li>
-        <li class="page-item"><a class="page-link" href="#!">15</a></li>
-        {% endif %}-->
 
     {% if page_obj.has_next %}
     <li class="page-item">
