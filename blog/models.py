@@ -68,6 +68,12 @@ class Post(models.Model):
     def get_content_markdown(self):
         return markdown(self.content)
 
+    def get_avatar_url(self):
+        if self.author.socialaccount_set.exists():      # 소셜 로그인 계정의 아바타 url 이 있을 경우 가져온다.
+            return self.author.socialaccount_set.first().get_avatar_url()
+        else:   # 없을 경우 doitdjango.com/avatar 에서 생성한 프로젝트 id, pw를 통해 고유 아바타 생성
+            return f'https://doitdjango.com/avatar/id/311/e7a558bbb4069d38/svg/{self.author.username}' # email도 가능하지만, 존재하지 않을 수 있음
+
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -82,7 +88,7 @@ class Comment(models.Model):
         return f'{self.post.get_absolute_url()}#comment-{self.pk}'
 
     def get_avatar_url(self):
-        if self.author.socialaccount_set.exists():      # 소셜 로그인 계정의 아바타 url 이 있을 경우 가져온다.
+        if self.author.socialaccount_set.exists():
             return self.author.socialaccount_set.first().get_avatar_url()
-        else:   # 없을 경우 doitdjango.com/avatar 에서 생성한 프로젝트 id, pw를 통해 고유 아바타 생성
-            return f'https://doitdjango.com/avatar/id/311/e7a558bbb4069d38/svg/{self.author.username}'  # email도 가능하지만, email은 존재하지 않을 수 있다.
+        else:
+            return f'https://doitdjango.com/avatar/id/311/e7a558bbb4069d38/svg/{self.author.username}'
