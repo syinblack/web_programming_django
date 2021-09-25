@@ -26,4 +26,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),                # default: 관리자 페이지로 연결
 ]
 
+# 미디어 파일, 정적 파일 url 추가
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'do_it_django_prj.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+## sqlite3 사용하지 않고, postgreSQL 데이터베이스 사용.
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get("SQL_ENGINE", 'django.db.backends.sqlite3'),
@@ -140,7 +140,9 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+# 정적 파일 관리할 폴더 만들기
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, '_static')
 
 # 미디어 파일 관리할 폴더만들기
 MEDIA_URL = '/media/'
