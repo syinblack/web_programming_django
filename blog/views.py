@@ -104,7 +104,7 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category', 'tags']
+    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']
 
     template_name = 'blog/post_update_form.html'        # CreateView, UpdateView는 모델명_form.html이 default template
 
