@@ -37,14 +37,15 @@
             {% if post.head_image %}
                 <img class="img-fluid rounded" src="{{ post.head_image.url }}" alt="{{ post.title }} head_image">
             {% else %}
-                <img class="img-fluid rounded" src="https://picsum/photos/seed/{{ post.id }}/800/200" alt="random_image">
+                <img class="img-fluid rounded" src="https://picsum.photos/seed/{{ post.id }}/800/200" alt="random_image">
             {% endif %}
         </figure>
-        <hr>
+
         <!-- Post content-->
-        <section class="mb-5">
+        <section class="mb-5" style="white-space: pre-wrap; border:1px solid #D5D5D5">
             <p>{{ post.get_content_markdown | safe }}</p>   <!-- 마크다운 형식으로 가져옴 -->
         </section>
+
         <!--Tags-->
         {% if post.tags.exists %}
             <i class="fas fa-tags"></i>
@@ -132,7 +133,7 @@
                     {% endif %}
                     <h5 class="mt-0">{{ comment.author.username }} &nbsp;&nbsp;<small class="text-muted">{{ comment.created_at }}</small>
                     </h5>
-                        <p>{{ comment.content | linebreaks }}</p>
+                        <div style="white-space: pre-wrap; background-color: #EAEAEA; border-radius: 3px; padding: 5px; border:2px solid #D5D5D5">{{ comment.content | linebreaks }}</div>
 
                     {% if comment.created_at != comment.modified_at %}
                     <p class="text-muted float-right"><small>Updated: {{ comment.modified_at }}</small></p>

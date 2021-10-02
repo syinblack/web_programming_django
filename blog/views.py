@@ -9,6 +9,7 @@ from django.utils.text import slugify                   # for slugify()
 from django.db.models import Q                          # for 다중 쿼리 Q
 #from django.core.paginator import Paginator
 
+
 # CBV 방식
 class PostList(ListView):
     model = Post
@@ -41,7 +42,8 @@ class PostList(ListView):
         context['page_range_5'] = page_range_5 # range(1, 페이지 개수+1) 리스트 반환
         return context
 
-class PostSearch(PostList): # ListView -> PostList -> PostSearch 순으로 상속
+
+class PostSearch(PostList):     # ListView -> PostList -> PostSearch 순으로 상속
 
     def get_queryset(self):
         q = self.kwargs['q']
@@ -81,7 +83,7 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         current_user = self.request.user
         if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
             form.instance.author = current_user
-            response = super(PostCreate, self).form_valid(form) # author가 담긴 form 임시 저장. 이후 tag까지 추가한 뒤 return
+            response = super(PostCreate, self).form_valid(form)     # author가 담긴 form 임시 저장. 이후 tag까지 추가한 뒤 return
 
             tags_str = self.request.POST.get('tags_str')        # 템플릿 파일 post_form.html의 'tags_str'에 담긴 input을 가져와
             if tags_str:    # if there is one or more tags
@@ -143,6 +145,7 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
 
         return response
 
+
 class CommentUpdate(LoginRequiredMixin, UpdateView):
     model = Comment
     form_class = CommentForm
@@ -152,6 +155,7 @@ class CommentUpdate(LoginRequiredMixin, UpdateView):
             return super(CommentUpdate, self).dispatch(request, *args, **kwargs)
         else:
             raise PermissionDenied
+
 
 # FBV 방식
 def category_page(request, slug):
