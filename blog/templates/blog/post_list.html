@@ -42,7 +42,7 @@
         {% if p.hook_text %}
         <h5 class="text-muted">{{ p.hook_text }}</h5>
         {% endif %}
-        <p class="card-text">{{ p.get_content_markdown | truncatewords_html:45 | safe }}</p> <!-- 마크다운 적용 -->
+        <p class="card-text" style="white-space: pre-line;">{{ p.get_content_markdown | truncatewords_html:45 | safe }}</p> <!-- 마크다운 적용 -->
 
         {% if p.tags.exists %}
         <i class="fas fa-tags"></i>
