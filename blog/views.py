@@ -24,22 +24,6 @@ class PostList(ListView):
         context['categories'] = Category.objects.all()      # no_category 포함 모든 카테고리 이름 가져오고, 해당 개수 또한 가져옴.
         context['no_category_post_count'] = Post.objects.filter(category=None).count()  # 미분류 카테고리 개수 가져옴.
 
-        # 페이지네이션
-        #Paginator(Post.objects.all(), self.paginate_by)
-        cur_page = context['page_obj'].number
-        num_pages = context['page_obj'].paginator.num_pages
-
-        if num_pages < 5:       # 페이지가 5개 미만이면 그냥 전부 표시
-            page_range_5 = range(1, num_pages + 1)
-        else:                   # 페이지가 5개 이상일 경우 해당 근처 5개 페이지 표시
-            if cur_page <= 2:
-                page_range_5 = [1, 2, 3, 4, 5]
-            elif cur_page >= num_pages - 1:
-                page_range_5 = [num_pages-4, num_pages-3, num_pages-2, num_pages-1, num_pages]
-            else:
-                page_range_5 = [cur_page-2, cur_page-1, cur_page, cur_page+1, cur_page+2]
-
-        context['page_range_5'] = page_range_5 # range(1, 페이지 개수+1) 리스트 반환
         return context
 
 
@@ -197,6 +181,7 @@ def tag_page(request, slug):
         }
     )
 
+
 def new_comment(request, pk):
     if request.user.is_authenticated:
         post = get_object_or_404(Post, pk=pk)
@@ -213,6 +198,7 @@ def new_comment(request, pk):
             return redirect(post.get_absolute_url())
     else:
         raise PermissionDenied
+
 
 def delete_comment(request, pk):
     comment = get_object_or_404(Comment, pk=pk)

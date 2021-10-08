@@ -65,9 +65,10 @@
 <h3>아직 게시물이 없습니다.</h3>
 {% endif %}
 
-{% if is_paginated %} <!-- 게시물이 적어 pagination할 필요 없을 경우 해당 부분 표시 안됨 -->
+{% if is_paginated %} <!-- pagination 할 필요 없을 경우 해당 부분 표시 안됨 -->
 <!-- Pagination-->
 <ul class="pagination justify-content-center mb-4">
+    <!-- 이전 페이지 -->
     {% if page_obj.has_previous %}
     <li class="page-item">
         <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&larr; Newer</a>
@@ -77,17 +78,21 @@
         <a class="page-link" href="#">&larr; Newer</a>
     </li>
     {% endif %}
-
-    {% if page_range_5 %}
-        {% for i in page_range_5 %}
-            {% if page_obj.number == i %}
-                <li class="page-item active" aria-current="page"><a class="page-link">{{ i }}</a></li>
+    <!-- 페이지 리스트 -->
+    {% for page_number in page_obj.paginator.page_range %}
+        {% if page_number >= page_obj.number|add:-4 and page_number <= page_obj.number|add:4 %} <!-- 현재 페이지 앞뒤 4페이지만 표시 -->
+            {% if page_number == page_obj.number %}
+                <li class="page-item active">
+                    <span class="page-link" href="?page={{ page_number }}">{{ page_number }}</span> <!-- 현재 페이지는 클릭 비활성화 -->
+                </li>
             {% else %}
-                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                </li>
             {% endif %}
-        {% endfor %}
-    {% endif %}
-
+        {% endif %}
+    {% endfor %}
+    <!-- 다음 페이지 -->
     {% if page_obj.has_next %}
     <li class="page-item">
         <a class="page-link" href="?page={{ page_obj.next_page_number }}">Older &rarr;</a>
