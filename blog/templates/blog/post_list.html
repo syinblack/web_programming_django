@@ -8,6 +8,13 @@
 {% endif %}
 {% endif %}
 
+<style>
+div.card img {
+    max-height: 200px;
+    overflow: hidden;   <!-- '왜 hidden 적용이 안될까' -->
+}
+</style>
+
 <h1>
     Blog
     {% if search_info %}<small class="text-muted">{{ search_info }}</small>{% endif %}
@@ -28,36 +35,36 @@
 <!-- Blog post-->
 <div class="card mb-4" id="post-{{ p.pk }}">
     {% if p.head_image %}
-    <img class="card-img-top" src="{{ p.head_image.url }}" alt="{{ p }} head image" />
+    <img class="card-img-top" src="{{ p.head_image.url }}" alt="{{ p }} head image">
     {% else %}
     <img class="card-img-top" src="https://picsum.photos/seed/{{ p.id }}/800/200" alt="random_image">
     {% endif %}
-    <div class="card-body">
+
+    <div class="card-body my-n2">
         {% if p.category %}
         <span class="badge badge-secondary float-right">{{ p.category }}</span>
         {% else %}
         <span class="badge badge-secondary float-right">미분류</span>
         {% endif %}
-        <h2 class="card-title">{{ p.title }}</h2>
+        <a class="card-title" href="{{ p.get_absolute_url }}"><h2>{{ p.title }}</h2></a>
         {% if p.hook_text %}
-        <h5 class="text-muted">{{ p.hook_text }}</h5>
+        <h5 class="text-muted"><small>{{ p.hook_text }}</small></h5>
         {% endif %}
-        <p class="card-text" style="white-space: pre-line;">{{ p.get_content_markdown | truncatewords_html:45 | safe }}</p> <!-- 마크다운 적용 -->
+        <hr>
+        <div class="card-text my-n1">{{ p.get_content_markdown | truncatewords_html:30 | truncatechars_html:70 | safe }}</div> <!-- 마크다운 적용 -->
 
         {% if p.tags.exists %}
         <i class="fas fa-tags"></i>
-        {% for tag in p.tags.iterator %}
-        <a href="{{ tag.get_absolute_url }}"><span class="badge badge-pill badge-light">{{ tag }}</span></a>
-        {% endfor %}
-        <br />
-        <br />
+            {% for tag in p.tags.iterator %}
+                <a href="{{ tag.get_absolute_url }}"><span class="badge badge-pill badge-light">{{ tag }}</span></a>
+            {% endfor %}
         {% endif %}
-
-        <a href="{{ p.get_absolute_url }}" class="btn btn-primary">Read more &rarr;</a>
+    <hr>
     </div>
-    <div class="card-footer text-muted">
-        Posted on {{ p.created_at }} by
-        <a href="#">{{ p.author | upper }}</a>
+
+    <div class="text-muted mt-n3 ml-auto mx-2 mb-1">
+        {{ p.created_at }} by
+        <strong href="#" class="text-dark">{{ p.author }}</strong>
     </div>
 </div>
 {% endfor %}
@@ -65,41 +72,44 @@
 <h3>아직 게시물이 없습니다.</h3>
 {% endif %}
 
+
 <!-- Pagination-->
-<ul class="pagination justify-content-center mb-4">
-    <!-- 이전 페이지 -->
-    {% if page_obj.has_previous %}
-    <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&larr; Newer</a>
-    </li>
-    {% else %}
-    <li class="page-item disabled">
-        <a class="page-link" href="#">&larr; Newer</a>
-    </li>
-    {% endif %}
-    <!-- 페이지 리스트 -->
-    {% for page_number in page_obj.paginator.page_range %}
-        {% if page_number >= page_obj.number|add:-4 and page_number <= page_obj.number|add:4 %} <!-- 현재 페이지 앞뒤 4페이지만 표시 -->
-            {% if page_number == page_obj.number %}
-                <li class="page-item active">
-                    <span class="page-link" href="?page={{ page_number }}">{{ page_number }}</span> <!-- 현재 페이지는 클릭 비활성화 -->
-                </li>
-            {% else %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
-                </li>
-            {% endif %}
+{% if is_paginated %}
+    <ul class="pagination justify-content-center mb-4">
+        <!-- 이전 페이지 -->
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&larr; Newer</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#">&larr; Newer</a>
+        </li>
         {% endif %}
-    {% endfor %}
-    <!-- 다음 페이지 -->
-    {% if page_obj.has_next %}
-    <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Older &rarr;</a>
-    </li>
-    {% else %}
-    <li class="page-item disabled">
-        <a class="page-link" href="#">Older &rarr;</a>
-    </li>
-    {% endif %}
-</ul>
+        <!-- 페이지 리스트 -->
+        {% for page_number in page_obj.paginator.page_range %}
+            {% if page_number >= page_obj.number|add:-4 and page_number <= page_obj.number|add:4 %} <!-- 현재 페이지 앞뒤 4페이지만 표시 -->
+                {% if page_number == page_obj.number %}
+                    <li class="page-item active">
+                        <span class="page-link" href="?page={{ page_number }}">{{ page_number }}</span> <!-- 현재 페이지는 클릭 비활성화 -->
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        <!-- 다음 페이지 -->
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Older &rarr;</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#">Older &rarr;</a>
+        </li>
+        {% endif %}
+    </ul>
+{% endif %}
 {% endblock %}
