@@ -14,7 +14,7 @@
 <body style="background-color: #708090;">
     {% include 'blog/navbar.html' %} <!-- !나중에 navbar 작동방식 개선할 것, -->
 
-    <div class="container my-3">
+    <div class="container my-3 pb-5">
         <div class="row">
             <div class="col-md-8 col-lg-9" id="main-area">
                 {% block main_area %}       <!-- fill with post_list, post_detail -->
@@ -70,7 +70,9 @@
         });
     </script>
 
+    <div class="fixed-bottom">
     {% include 'blog/footer.html' %}
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>

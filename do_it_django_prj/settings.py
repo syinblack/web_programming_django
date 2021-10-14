@@ -74,7 +74,8 @@ ROOT_URLCONF = 'do_it_django_prj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # allauth 앱을 사용한 경우, 장고 템플릿말고, 내가 커스텀한 템플릿을 사용한다.
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'allauth')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
