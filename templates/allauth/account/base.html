@@ -1,42 +1,45 @@
 <!DOCTYPE html>
 {% load static %}
-<html>
-  <head>
+<html lang="ko">
+<head>
     <title>{% block head_title %}{% endblock %}</title>
-    {% block extra_head %}
-    {% endblock %}
-  </head>
-  <body>
-    {% block body %}
+        {% block extra_head %}
+        {% endblock %}
 
-    {% if messages %}
-    <div>
-      <strong>Messages:</strong>
-      <ul>
-        {% for message in messages %}
-        <li>{{message}}</li>
-        {% endfor %}
-      </ul>
+    <link rel="stylesheet" href="{% static 'blog/bootstrap/bootstrap.min.css' %}" media="screen">
+    <link rel="stylesheet" href="{% static 'single_pages/css/landing.css' %}" media="screen">
+</head>
+<body>
+    {% include 'allauth/navbar.html' %} <!-- blog/navbar 변경 -->
+
+    <div class="container mt-5 py-3"> <!-- mt-3: nav bar 간격, py-3: card 간격 -->
+        <div class="card pl-2 pb-2">
+        {% block body %}
+            {% if messages %}
+                <div>
+                    <strong>Messages:</strong>
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{message}}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <!-- Sign In, Sign Up -->
+            {% block content %}
+            {% endblock %}
+
+        {% endblock %}
+
+        {% block extra_body %}
+        {% endblock %}
+
+
+        <div class="fixed-bottom">
+            {% include 'blog/footer.html' %}
+        </div>
+        </div>
     </div>
-    {% endif %}
-
-    <div>
-      <strong>Menu:</strong>
-      <ul>
-        {% if user.is_authenticated %}
-        <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
-        <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
-        {% else %}
-        <li><a href="{% url 'account_login' %}">Sign In</a></li>
-        <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
-        {% endif %}
-      </ul>
-    </div>
-    {% block content %}
-    {% endblock %}
-    {% endblock %}
-    {% block extra_body %}
-    {% endblock %}
-
-  </body>
+</body>
 </html>
